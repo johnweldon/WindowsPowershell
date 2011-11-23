@@ -90,8 +90,5 @@ function addkey-sshagent {
     }
 }
 
-start-sshagent
-addkey-sshagent
-
 
 write-debug "DONE loading sourcecontrol_functions"
