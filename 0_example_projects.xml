@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<projects>
+  <project name="work" folder="c:\work" />
+  <project name="build" folder="c:\build" />
+  <project name="profile" folder="$env:profile_dir" />
+  <project name="dropbox" folder="$env:dropboxpath" />
+  <project name="logfiles" folder='("{0}\logfiles" -f $env:dropboxpath)' />
+</projects>
