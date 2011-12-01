@@ -75,6 +75,7 @@ function start-sshagent {
             $private:cmd = ('$env:{0}="{1}"' -f $private:pair)
             invoke-expression $private:cmd
         }
+        write-warning "Use exit to leave shell"
         register-engineevent powershell.exiting -action {
         	ps -Id $env:SSH_AGENT_PID -ErrorAction SilentlyContinue | stop-process
         } | out-null
