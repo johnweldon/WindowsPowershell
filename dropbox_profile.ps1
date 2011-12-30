@@ -8,7 +8,11 @@ $env:hosts = resolve-path "c:\windows\system32\drivers\etc\hosts"
 $env:profile = (join-path $env:profile_dir "profile.ps1")
 if(gcm -ErrorAction SilentlyContinue GetDropboxPath) {
 	$env:dropboxpath = (getdropboxpath)
+    # tcc
 	$env:PATH += (";{0}" -f (join-path $env:dropboxpath "tcc"))
+    # GO
+	$env:GOROOT = (join-path (join-path $env:dropboxpath "gowin386_release.r60.3") "go")
+	$env:PATH += (";{0}" -f (join-path $env:GOROOT "bin"))
 }
 
 
