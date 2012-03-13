@@ -6,6 +6,7 @@ write-debug "LOAD profile"
 $env:EDITOR = "gvim.exe"
 $env:hosts = resolve-path "c:\windows\system32\drivers\etc\hosts"
 $env:profile = (join-path $env:profile_dir "profile.ps1")
+$env:HOST = $env:COMPUTERNAME
 
 if(gcm -ErrorAction SilentlyContinue GetDropboxPath) {
 	$env:dropboxpath = (getdropboxpath)

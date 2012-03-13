@@ -1,14 +1,28 @@
 ## helper functions
 write-debug "LOAD misc_functions"
 
+function get-identity {
+    return [Security.Principal.WindowsIdentity]::GetCurrent()
+}
+
+function is-admin {
+    return ([Security.Principal.WindowsPrincipal] (get-identity)).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
+}
+
 # PROMPT
-function prompt { $Host.UI.RawUI.WindowTitle = [string]("{0:yyyy-MM-dd HH:mm:ss} -- {1}" -f (get-date),(pwd).Path); "$ " }
+function prompt { 
+    $Host.UI.RawUI.WindowTitle = [string]("{0:yyyy-MM-dd HH:mm:ss} -- {1}" -f (get-date),(pwd).Path);
+    if(is-admin) {
+        "# "
+    } else {
+        "$ " 
+    }
+}
 
 set-alias -name "less" -value "more"
 
-function get-me {[security.principal.windowsidentity]::getcurrent()}
-set-alias -name "w" -value "get-me"
-set-alias -name "whoami" -value "get-me"
+set-alias -name "w" -value "get-identity"
+set-alias -name "whoami" -value "get-identity"
 
 function lsa { param($path="."); Get-ChildItem -Force $path }
 set-alias -name "la" -value "lsa"
