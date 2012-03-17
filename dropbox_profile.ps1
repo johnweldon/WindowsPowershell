@@ -1,6 +1,8 @@
 
 $DebugPreference = "SilentlyContinue"
 
+$Host.UI.RawUI.ForegroundColor = 'Cyan'
+
 write-debug "LOAD profile"
 #misc env vars
 $env:EDITOR = "gvim.exe"
