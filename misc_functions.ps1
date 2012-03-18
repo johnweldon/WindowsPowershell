@@ -11,10 +11,13 @@ function is-admin {
 
 # PROMPT
 function prompt { 
-    $Host.UI.RawUI.WindowTitle = [string]("{0:yyyy-MM-dd HH:mm:ss} -- {1}" -f (get-date),(pwd).Path);
     if(is-admin) {
+        $Host.UI.RawUI.ForegroundColor = 'Yellow'
+        $Host.UI.RawUI.WindowTitle = [string]("(ADMIN) {0:yyyy-MM-dd HH:mm:ss} -- {1}" -f (get-date),(pwd).Path);
         "# "
     } else {
+        $Host.UI.RawUI.ForegroundColor = 'Cyan'
+        $Host.UI.RawUI.WindowTitle = [string]("{0:yyyy-MM-dd HH:mm:ss} -- {1}" -f (get-date),(pwd).Path);
         "$ " 
     }
 }
