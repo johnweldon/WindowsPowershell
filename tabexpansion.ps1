@@ -5,10 +5,12 @@ function TabExpansion {
 	if($line.tolower().trim().startswith("g:") -or $line.tolower().trim().startswith(":")) {
 		$script:pr = @(list-projects)
 		foreach ($script:v in $script:pr) {
+		    $script:q = $script:v.Project
+		    if($script:q.contains(" ")) { $script:q = ("'{0}'" -f $script:q) }
 			if(-not($lastword.endswith(":g ")) -or -not($lastword.endswith(": "))) {
-				if($script:v.Project.tolower().startswith($lastword.tolower())) { $script:v.Project }
+				if($script:v.Project.tolower().startswith($lastword.tolower())) { $script:q }
 			} else {
-				$script:v.Project
+				$script:q
 			}
 		}
 	} else {

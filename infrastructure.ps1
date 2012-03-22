@@ -3,7 +3,19 @@ write-debug "LOAD Infrastructure"
 
 function get-projectsfile { return (join-path (split-path $PROFILE) "projects.xml") }
 
-function get-projects { return [xml](gc (get-projectsfile)) }
+function get-projects { 
+    $private:p = [xml](gc (get-projectsfile)) 
+    $private:usf = (gi 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders')
+    
+    $private:usf.GetValueNames() | %{
+        $private:e = ($private:p).CreateElement("project");
+        $null = $private:e.SetAttribute("name", $_);
+        $null = $private:e.SetAttribute("folder", ( "'{0}'" -f $private:usf.GetValue($_)));
+        $null = ($private:p.projects).AppendChild($private:e);
+    }
+
+    return $private:p
+}
 
 function expand-path {
 	param($path = ".")
@@ -56,7 +68,7 @@ function edit-projects { gvim (get-projectsfile) }
 function list-projects { 
 	(get-projects).selectnodes("descendant::project") | %{ 
 		$obj = new-object system.object
-		$obj | add-member -type noteproperty -name Project -value $_.name
+        $obj | add-member -type noteproperty -name Project -value $_.name
 		$obj | add-member -type noteproperty -name Path -value (expand-path $_.folder)
 		$obj
 	}
