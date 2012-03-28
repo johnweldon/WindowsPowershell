@@ -15,10 +15,18 @@ if(gcm -ErrorAction SilentlyContinue GetDropboxPath) {
     # tcc
 	$env:PATH += (";{0}" -f (join-path $env:dropboxpath "tcc"))
     # GO
-	$env:GOROOT = (join-path (join-path $env:dropboxpath "gowin386_release.r60.3") "go")
-	$env:GOBIN = (join-path $env:GOROOT "bin")
-	$env:GOARCH = "386"
-	$env:PATH += (";{0}" -f $env:GOBIN)
+	if($false){
+        $env:GOROOT = (join-path (join-path $env:dropboxpath "gowin386_release.r60.3") "go")
+        $env:GOBIN = (join-path $env:GOROOT "bin")
+        $env:GOARCH = "386"
+        $env:PATH += (";{0}" -f $env:GOBIN)
+    }
+    if($true){
+        $env:GOROOT = (join-path (join-path $env:dropboxpath "gowinamd64.1") "go")
+        $env:GOBIN = (join-path $env:GOROOT "bin")
+        $env:GOARCH = "386"
+        $env:PATH += (";{0}" -f $env:GOBIN)
+    }
 }
 
 
