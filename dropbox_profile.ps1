@@ -1,8 +1,6 @@
 
 $DebugPreference = "SilentlyContinue"
 
-$Host.UI.RawUI.ForegroundColor = 'Cyan'
-
 write-debug "LOAD profile"
 #misc env vars
 $env:EDITOR = "gvim.exe"
@@ -24,7 +22,7 @@ if(gcm -ErrorAction SilentlyContinue GetDropboxPath) {
     if($true){
         $env:GOROOT = (join-path (join-path $env:dropboxpath "gowinamd64.1") "go")
         $env:GOBIN = (join-path $env:GOROOT "bin")
-        $env:GOARCH = "386"
+        $env:GOARCH = "amd64"
         $env:PATH += (";{0}" -f $env:GOBIN)
     }
 }
