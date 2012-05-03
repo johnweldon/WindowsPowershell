@@ -25,6 +25,13 @@ set-alias -name "less" -value "more"
 set-alias -name "w" -value "get-identity"
 set-alias -name "whoami" -value "get-identity"
 
+function timed-history { 
+    "{0,15} {1,-15} {2}" -f "Id", "Seconds", "Command"
+    "{0,15} {1,-15} {2}" -f "--", "-------", "-------"
+    Get-History | %{ "{0,15}  {1,-15} {2}" -f $_.Id, ($_.EndExecutionTime - $_.StartExecutionTime).TotalSeconds, $_.CommandLine } 
+} 
+set-alias -name "hi" -value "timed-history"
+
 function lsa { param($path="."); Get-ChildItem -Force $path }
 set-alias -name "la" -value "lsa"
 set-alias -name "ll" -value "lsa"
