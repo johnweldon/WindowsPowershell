@@ -7,6 +7,7 @@ $env:EDITOR = "gvim.exe"
 $env:hosts = resolve-path "c:\windows\system32\drivers\etc\hosts"
 $env:profile = (join-path $env:profile_dir "profile.ps1")
 $env:HOST = $env:COMPUTERNAME
+$env:TERM = "msys"
 
 if(gcm -ErrorAction SilentlyContinue GetDropboxPath) {
 	$env:dropboxpath = (getdropboxpath)
@@ -15,16 +16,15 @@ if(gcm -ErrorAction SilentlyContinue GetDropboxPath) {
     # GO
 	if($false){
         $env:GOROOT = (join-path (join-path $env:dropboxpath "gowin386_release.r60.3") "go")
-        $env:GOBIN = (join-path $env:GOROOT "bin")
         $env:GOARCH = "386"
-        $env:PATH += (";{0}" -f $env:GOBIN)
     }
     if($true){
         $env:GOROOT = (join-path (join-path $env:dropboxpath "gowinamd64.1") "go")
-        $env:GOBIN = (join-path $env:GOROOT "bin")
         $env:GOARCH = "amd64"
-        $env:PATH += (";{0}" -f $env:GOBIN)
     }
+    $env:GOPATH = (join-path (join-path $env:dropboxpath "source") "go_packages")
+    $env:GOBIN = (join-path $env:GOROOT "bin")
+    $env:PATH += (";{0}" -f $env:GOBIN)
 }
 
 
