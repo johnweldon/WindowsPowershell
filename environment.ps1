@@ -150,6 +150,7 @@ function load-env {
 	## Other useful variables
 	if($env:FrameworkDir -and $env:FrameworkVersion) {
 		$env:tempfiles = (join-path (join-path $env:FrameworkDir $env:FrameworkVersion) "Temporary ASP.NET Files")
+		$env:tempfiles64 = $env:tempfiles.Replace('Framework\', 'Framework64\')
 	}
 }
 

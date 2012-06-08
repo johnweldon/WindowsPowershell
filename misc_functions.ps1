@@ -20,6 +20,10 @@ function prompt {
     }
 }
 
+function elevate-shell {
+    start-process -verb runas powershell
+}
+
 set-alias -name "less" -value "more"
 
 set-alias -name "w" -value "get-identity"
