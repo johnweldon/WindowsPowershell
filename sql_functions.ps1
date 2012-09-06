@@ -11,7 +11,6 @@ function execute-sqlitequery {
 		[string]$db = $(throw "specify db file"),
 		[string]$query = $(throw "specify query")
 	)
-	if(-not(test-path $db)) { throw ("db file '{0}' does not exist" -f $db) }
 	if(-not(get-command -ErrorAction SilentlyContinue sqlite3.exe)) { throw "sqlite not found" } 
 	return sqlite3.exe $db $query
 }
