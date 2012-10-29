@@ -7,7 +7,7 @@ $env:EDITOR = "gvim.exe"
 $env:hosts = resolve-path "c:\windows\system32\drivers\etc\hosts"
 $env:profile = (join-path $env:profile_dir "profile.ps1")
 $env:HOST = $env:COMPUTERNAME
-$env:TERM = "msys"
+#$env:TERM = "msys" # http://stackoverflow.com/a/10820885/102371
 
 if(gcm -ErrorAction SilentlyContinue GetDropboxPath) {
 	$env:dropboxpath = (getdropboxpath)
