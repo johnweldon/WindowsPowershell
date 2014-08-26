@@ -48,6 +48,7 @@ function hg-iscruft {
 	".log",".txt",".xml",".suo",".user",".bin",".dat",".dll",".exe",".pdb",".exe.config",".dll.config" | %{ if($local:p.endswith($_)){return $true} }
 	return $false
 }
+function hg-sum { [string]::join([environment]::newline, (hg sum)) }
 
 ## git functions
 function get-gitbinpath {
