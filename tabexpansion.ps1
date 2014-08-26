@@ -1,5 +1,6 @@
-
-copy function:\TabExpansion function:\DefaultTabExpansion
+if(test-path function:\TabExpansion){
+    copy function:\TabExpansion function:\DefaultTabExpansion
+}
 
 function optionally-quote {
     param($script:str)
