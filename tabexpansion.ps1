@@ -1,3 +1,5 @@
+if((test-path env:\PkgDefApplicationConfigFile) -and (test-path $env:PkgDefApplicationConfigFile)){ return }
+
 if(test-path function:\TabExpansion){
     copy function:\TabExpansion function:\DefaultTabExpansion
 }

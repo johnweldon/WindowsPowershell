@@ -29,6 +29,9 @@ $sources =
 $sources | %{ join-path $env:profile_dir $_ } | ?{ test-path $_ } | %{ write-debug "loading $_";  . $_ }
 rm variable:\sources
 
+$env:PATH += ";" + (join-path $env:dropboxpath "bin\tcc")
+
+
 function rdp-yzma { mstsc /v:"yzma.jw4.us:23389" /f /multimon }
 function rdp-rack { mstsc /v:"portal.valuevision.com" /f /multimon }
 set-alias -name rpy -value rdp-yzma
