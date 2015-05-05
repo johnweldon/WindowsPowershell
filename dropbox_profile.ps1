@@ -30,12 +30,8 @@ $sources | %{ join-path $env:profile_dir $_ } | ?{ test-path $_ } | %{ write-deb
 rm variable:\sources
 
 $env:PATH += ";" + (join-path $env:dropboxpath "bin\tcc")
+$env:PATH += ";" + (join-path $env:dropboxpath "bin\git-tfs")
 
-
-function rdp-yzma { mstsc /v:"yzma.jw4.us:23389" /f /multimon }
-function rdp-rack { mstsc /v:"portal.valuevision.com" /f /multimon }
-set-alias -name rpy -value rdp-yzma
-set-alias -name rpr -value rdp-rack
 
 write-debug "clean-path"
 clean-path
