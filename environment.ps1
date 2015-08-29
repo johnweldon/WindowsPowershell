@@ -45,22 +45,37 @@ function load-vcvars {
 	$vs = join-path (join-path $vsdrive $vsparent) $vsfolder
 	$vc = join-path $vs "VC\vcvarsall.bat"
 	write-debug ("what's this? {0}" -f $vc)
-	if(test-path $vc) { set-env -Command $vc -Arguments $vsargs }
+	if(test-path $vc) { 
+	    set-env -Command $vc -Arguments $vsargs 
+	    return $True
+	}
+	return $False
 }
 
+$script:foundvs = $False
 function load-visualstudio {
 	param($vsver = "9.0")
+	if ($script:foundvs) { return }
 	write-debug "load-visualstudio"
 	if ($search_all_drives) {
         [System.IO.DriveInfo]::GetDrives() | ?{ $_.DriveType -eq "Fixed" } | %{
             $drive = $_.Name
-            ""," (x86)" | %{ load-vcvars -vsver $vsver -vscpu $_ -vsdrive $drive }
+            ""," (x86)" | %{
+                if (load-vcvars -vsver $vsver -vscpu $_ -vsdrive $drive) {
+                    $script:foundvs = $True
+                }
+            }
         }
     } else {
-            ""," (x86)" | %{ load-vcvars -vsver $vsver -vscpu $_ -vsdrive "c:\" }
+            ""," (x86)" | %{ 
+                if (load-vcvars -vsver $vsver -vscpu $_ -vsdrive "c:\") {
+                    $script:foundvs = $True
+                }
+            }
     }
 }
 
+function load-vs2015 { load-visualstudio -vsver "14.0" }
 function load-vs2013 { load-visualstudio -vsver "12.0" }
 function load-vs2012 { load-visualstudio -vsver "11.0" }
 function load-vs2010 { load-visualstudio -vsver "10.0" }
@@ -142,28 +157,30 @@ function load-env {
 	write-debug "Load Visual Studio Env"
 	if ($True -and -not $env:DevEnvDir) { 
 		load-platformsdk
-		load-vs2010 
-		load-vs2012 
-		load-vs2013 
+		load-vs2015 
+        load-vs2013 
+        load-vs2012 
+        load-vs2010 
 	}
 
 	write-debug "Set .NET framework path"
 
 	$private:root = join-path $env:SystemRoot "Microsoft.NET"
 	if($True) {
-		"Framework","Framework64" | %{
+	    $found = $False
+		"Framework64","Framework" | %{
 			$private:cur = join-path $private:root $_
-			"v2.0.50727","v3.5","v4.0.30319" | %{
+			"v4.0.30319","v3.5","v2.0.50727" | %{
 				$private:dir = join-path $private:cur $_
-				if(test-path $private:dir) {
+				if(-not $found -and (test-path $private:dir)) {
 					$env:PATH = ("{0};{1}" -f $private:dir,$env:PATH)
+					$found = $True
 				}
 			}
 		}
 	}
 
 	write-debug "Set FrameworkDir env var"
-
 	if ($True -and -not $env:FrameworkDir) {
 		$private:csc = (get-command -totalcount 1 csc)
 		if($private:csc) {
@@ -173,18 +190,10 @@ function load-env {
 		}
 	}
 
-	write-debug "Set tempfiles"
-
-	## Other useful variables
-	if($env:FrameworkDir -and $env:FrameworkVersion) {
-		$env:tempfiles = (join-path (join-path $env:FrameworkDir $env:FrameworkVersion) "Temporary ASP.NET Files")
-		$env:tempfiles64 = $env:tempfiles.Replace('Framework\', 'Framework64\')
-	}
-
 	write-debug "clean-lib"
-
 	clean-lib
 }
 
 load-env
+$env:Platform = "Any CPU"
 write-debug "DONE loading environment"

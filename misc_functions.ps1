@@ -87,7 +87,7 @@ function small-buffer {
 	$winsize = $host.UI.RawUI.WindowSize
 	$bufsize = new-object System.Management.Automation.Host.Size
 	$bufsize.Width = $winsize.Width
-	$bufsize.Height = $winsize.Height
+	$bufsize.Height = 3000 #$winsize.Height
 	$host.UI.RawUI.BufferSize = $bufsize
 }
 
