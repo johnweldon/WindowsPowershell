@@ -15,7 +15,7 @@ function set-env {
 	$private:proc = [System.Diagnostics.Process]::Start($private:pinfo)
 	$private:proc.WaitForExit()
 	gc $private:tfile | %{
-		write-debug (">>>>       {0}" -f $_)
+		write-debug (">>>>     {0}" -f $_)
 		$private:pair = $_.Split("=");
 		if ($private:pair.Length -eq 2) {
 			set-item -path ("env:{0}" -f $private:pair[0]) -value ("{0}" -f $private:pair[1])
@@ -46,8 +46,8 @@ function load-vcvars {
 	$vc = join-path $vs "VC\vcvarsall.bat"
 	write-debug ("what's this? {0}" -f $vc)
 	if(test-path $vc) { 
-	    set-env -Command $vc -Arguments $vsargs 
-	    return $True
+		set-env -Command $vc -Arguments $vsargs 
+		return $True
 	}
 	return $False
 }
@@ -58,21 +58,21 @@ function load-visualstudio {
 	if ($script:foundvs) { return }
 	write-debug "load-visualstudio"
 	if ($search_all_drives) {
-        [System.IO.DriveInfo]::GetDrives() | ?{ $_.DriveType -eq "Fixed" } | %{
-            $drive = $_.Name
-            ""," (x86)" | %{
-                if (load-vcvars -vsver $vsver -vscpu $_ -vsdrive $drive) {
-                    $script:foundvs = $True
-                }
-            }
-        }
-    } else {
-            ""," (x86)" | %{ 
-                if (load-vcvars -vsver $vsver -vscpu $_ -vsdrive "c:\") {
-                    $script:foundvs = $True
-                }
-            }
-    }
+		[System.IO.DriveInfo]::GetDrives() | ?{ $_.DriveType -eq "Fixed" } | %{
+			$drive = $_.Name
+			""," (x86)" | %{
+				if (load-vcvars -vsver $vsver -vscpu $_ -vsdrive $drive) {
+					$script:foundvs = $True
+				}
+			}
+		}
+	} else {
+		""," (x86)" | %{ 
+			if (load-vcvars -vsver $vsver -vscpu $_ -vsdrive "c:\") {
+					$script:foundvs = $True
+			}
+		}
+	}
 }
 
 function load-vs2015 { load-visualstudio -vsver "14.0" }
@@ -91,7 +91,7 @@ function load-platformsdk {
 		@{cmd="C:\Program Files\Microsoft Platform SDK\SetEnv.Cmd";args="/xp /x64"},
 		@{cmd="c:\default.cmd";args=""}|
 		?{ -not $found -and (test-path $_.cmd)} | %{
-			write-debug ("    set-env {0} {1}" -f $_.cmd, $_.args)
+			write-debug ("	set-env {0} {1}" -f $_.cmd, $_.args)
 			set-env -Command $_.cmd -Arguments $_.args -ea SilentlyContinue ; $found = $?
 			write-debug($env:Path)
 			$Error.clear()
@@ -119,18 +119,18 @@ function clean-lib {
 	$private:p = @{}
 	$private:k = 0
 	if($env:LIB) {
-        $env:LIB.Split(';') | %{
-            $private:v = $_.tolower()
-            if(-not ($private:p.ContainsValue($private:v)) -and (-not ($private:v -eq "")) -and (test-path $private:v)) {
-                $private:p.Add($private:k++,$private:v)
-            }
-        }
-        $env:LIB = ""
-        $private:p.Keys | sort | %{
-            $env:LIB += $private:p[$_] + ';'
-        }
-        $env:LIB = $env:LIB.Trim(';')
-    }
+		$env:LIB.Split(';') | %{
+			$private:v = $_.tolower()
+			if(-not ($private:p.ContainsValue($private:v)) -and (-not ($private:v -eq "")) -and (test-path $private:v)) {
+				$private:p.Add($private:k++,$private:v)
+			}
+		}
+		$env:LIB = ""
+		$private:p.Keys | sort | %{
+			$env:LIB += $private:p[$_] + ';'
+		}
+		$env:LIB = $env:LIB.Trim(';')
+	}
 }
 
 function get-versions {
@@ -153,21 +153,20 @@ function set-version {
 }
 
 function load-env {
-
 	write-debug "Load Visual Studio Env"
 	if ($True -and -not $env:DevEnvDir) { 
 		load-platformsdk
 		load-vs2015 
-        load-vs2013 
-        load-vs2012 
-        load-vs2010 
+		load-vs2013 
+		load-vs2012 
+		load-vs2010 
 	}
 
 	write-debug "Set .NET framework path"
 
 	$private:root = join-path $env:SystemRoot "Microsoft.NET"
 	if($True) {
-	    $found = $False
+		$found = $False
 		"Framework64","Framework" | %{
 			$private:cur = join-path $private:root $_
 			"v4.0.30319","v3.5","v2.0.50727" | %{
@@ -187,6 +186,19 @@ function load-env {
 			$env:FrameworkPath = split-path $private:csc.path
 			$env:FrameworkDir = split-path $env:FrameworkPath
 			$env:FrameworkVersion = split-path -leaf $env:FrameworkPath
+		}
+	}
+
+	write-debug "Set MSBuild paths"
+	$private:root = join-path ${env:ProgramFiles(x86)} "MSBuild"
+	if($True) {
+		$found = $False
+		"14.0","12.0", "4.0" | %{
+			$private:dir = join-path (join-path $private:root $_) "Bin"
+			if(-not $found -and (test-path $private:dir)) {
+				$env:PATH = ("{0};{1}" -f $private:dir,$env:PATH)
+				$found = $True
+			}
 		}
 	}
 

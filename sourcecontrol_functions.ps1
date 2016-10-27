@@ -52,12 +52,12 @@ function hg-sum { [string]::join([environment]::newline, (hg sum)) }
 
 ## git functions
 function get-gitbinpath {
-    $private:gp = (gcm git -ErrorAction SilentlyContinue)
-    if($private:gp) {
-        $private:pth = split-path (split-path $private:gp.Definition)
-        return join-path $private:pth "bin"
-    }
-    return $null
+	$private:gp = (gcm git -ErrorAction SilentlyContinue)
+	if($private:gp) {
+		$private:pth = split-path (split-path $private:gp.Definition)
+		return join-path $private:pth "bin"
+	}
+	return $null
 }
 
 function kill-sshagent {
@@ -67,29 +67,29 @@ function kill-sshagent {
 
 function start-sshagent {
 	if($env:SSH_AGENT_PID) { echo "ssh-agent running"; return }
-    $private:gp = get-gitbinpath
-    if($private:gp) {
-        $private:out = & (join-path $private:gp "ssh-agent")
-        $private:out | ?{$_.contains("=")} | %{
-            $private:cur = $_.split(";")[0]
-            $private:pair = $private:cur.split("=")
-            $private:cmd = ('$env:{0}="{1}"' -f $private:pair)
-            invoke-expression $private:cmd
-        }
-        write-warning "Use exit to leave shell"
-        register-engineevent powershell.exiting -action {
-        	ps -Id $env:SSH_AGENT_PID -ErrorAction SilentlyContinue | stop-process
-        } | out-null
-    }
+	$private:gp = get-gitbinpath
+	if($private:gp) {
+		$private:out = & (join-path $private:gp "ssh-agent")
+		$private:out | ?{$_.contains("=")} | %{
+			$private:cur = $_.split(";")[0]
+			$private:pair = $private:cur.split("=")
+			$private:cmd = ('$env:{0}="{1}"' -f $private:pair)
+			invoke-expression $private:cmd
+		}
+		write-warning "Use exit to leave shell"
+		register-engineevent powershell.exiting -action {
+			ps -Id $env:SSH_AGENT_PID -ErrorAction SilentlyContinue | stop-process
+		} | out-null
+	}
 }
 
 function addkey-sshagent {
 	if($env:SSH_AGENT_PID) {
-        $private:gp = get-gitbinpath
-        if($private:gp) {
-        	& (join-path $private:gp "ssh-add") (join-path $env:USERPROFILE "/.ssh/id_rsa")
-        }
-    }
+		$private:gp = get-gitbinpath
+		if($private:gp) {
+			& (join-path $private:gp "ssh-add") (join-path $env:USERPROFILE "/.ssh/id_rsa")
+		}
+	}
 }
 
 

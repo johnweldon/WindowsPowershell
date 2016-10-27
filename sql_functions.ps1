@@ -80,19 +80,19 @@ $env:DEFAULT_DB_DATABASE = "master"
 
 function sqlcmd-query {
 	param(
-	    $script = "SELECT 1",
-	    $database = $env:DEFAULT_DB_DATABASE,
-	    $server = $env:DEFAULT_DB_SERVER
+		$script = "SELECT 1",
+		$database = $env:DEFAULT_DB_DATABASE,
+		$server = $env:DEFAULT_DB_SERVER
 	)
 	if(gcm sqlcmd -ErrorAction SilentlyContinue) {
 	if(test-path $script -ErrorAction SilentlyContinue) {
-        sqlcmd -W -E -S $server -d $database -i $script
-    } else {
-        sqlcmd -W -E -S $server -d $database -Q $script
-    }
-    } else {
-    	write-warning "sqlcmd.exe not found"
-    }
+		sqlcmd -W -E -S $server -d $database -i $script
+	} else {
+		sqlcmd -W -E -S $server -d $database -Q $script
+	}
+	} else {
+		write-warning "sqlcmd.exe not found"
+	}
 }
 
 set-alias q sqlcmd-query

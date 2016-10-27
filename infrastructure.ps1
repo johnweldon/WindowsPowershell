@@ -4,17 +4,17 @@ write-debug "LOAD Infrastructure"
 function get-projectsfile { return (join-path (split-path $PROFILE) "projects.xml") }
 
 function get-projects { 
-    $private:p = [xml](gc (get-projectsfile)) 
-    $private:usf = (gi 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders')
-    
-    $private:usf.GetValueNames() | %{
-        $private:e = ($private:p).CreateElement("project");
-        $null = $private:e.SetAttribute("name", $_);
-        $null = $private:e.SetAttribute("folder", ( "'{0}'" -f $private:usf.GetValue($_)));
-        $null = ($private:p.projects).AppendChild($private:e);
-    }
+	$private:p = [xml](gc (get-projectsfile)) 
+	$private:usf = (gi 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders')
+	
+	$private:usf.GetValueNames() | %{
+		$private:e = ($private:p).CreateElement("project");
+		$null = $private:e.SetAttribute("name", $_);
+		$null = $private:e.SetAttribute("folder", ( "'{0}'" -f $private:usf.GetValue($_)));
+		$null = ($private:p.projects).AppendChild($private:e);
+	}
 
-    return $private:p
+	return $private:p
 }
 
 function expand-path {
@@ -23,20 +23,20 @@ function expand-path {
 	if(-not(test-path $private:ppath)){
 		write-error ("'{0}' does not exist" -f $private:ppath)
 		$private:ppath = "."
-    }
-    return resolve-path $private:ppath
+	}
+	return resolve-path $private:ppath
 }
 
 function show-projectstack {
 	" - path stack - "
-	"     --> {0}" -f (get-location)
+	"	 --> {0}" -f (get-location)
 	$private:ix = 0;
 	$private:stack = (get-location -Stack -StackName ProjectStack -ErrorAction SilentlyContinue)
 	if($private:stack) {
-        $private:stack.ToArray() | %{ 
-        	"   {1,5} {0}" -f $_.Path, $private:ix-- 
-        }
-    }
+		$private:stack.ToArray() | %{ 
+			"   {1,5} {0}" -f $_.Path, $private:ix-- 
+		}
+	}
 }
 
 function goto-project {
@@ -50,12 +50,12 @@ function goto-project {
 		list-projects
 		"--------"
 		""
-        show-projectstack
+		show-projectstack
 		return
 	}
 
 	push-location -StackName ProjectStack (expand-path $private:proj.folder)
-    show-projectstack
+	show-projectstack
 
 	if(-not $private:proj.script) { return }
 	$private:pscript = invoke-expression ("echo {0}" -f $private:proj.script)
@@ -68,7 +68,7 @@ function edit-projects { gvim (get-projectsfile) }
 function list-projects { 
 	(get-projects).selectnodes("descendant::project") | %{ 
 		$obj = new-object system.object
-        $obj | add-member -type noteproperty -name Project -value $_.name
+		$obj | add-member -type noteproperty -name Project -value $_.name
 		$obj | add-member -type noteproperty -name Path -value (expand-path $_.folder)
 		$obj
 	}

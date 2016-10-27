@@ -2,26 +2,26 @@
 write-debug "LOAD misc_functions"
 
 function get-identity {
-    return [Security.Principal.WindowsIdentity]::GetCurrent()
+	return [Security.Principal.WindowsIdentity]::GetCurrent()
 }
 
 function is-admin {
-    return ([Security.Principal.WindowsPrincipal] (get-identity)).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
+	return ([Security.Principal.WindowsPrincipal] (get-identity)).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
 }
 
 # PROMPT
 function prompt { 
-    if(is-admin) {
-        $Host.UI.RawUI.WindowTitle = [string]("(ADMIN) {0:yyyy-MM-dd HH:mm:ss} -- {1}" -f (get-date),(pwd).Path);
-        "# "
-    } else {
-        $Host.UI.RawUI.WindowTitle = [string]("{0:yyyy-MM-dd HH:mm:ss} -- {1}" -f (get-date),(pwd).Path);
-        "$ "
-    }
+	if(is-admin) {
+		$Host.UI.RawUI.WindowTitle = [string]("(ADMIN) {0:yyyy-MM-dd HH:mm:ss} -- {1}" -f (get-date),(pwd).Path);
+		"# "
+	} else {
+		$Host.UI.RawUI.WindowTitle = [string]("{0:yyyy-MM-dd HH:mm:ss} -- {1}" -f (get-date),(pwd).Path);
+		"$ "
+	}
 }
 
 function elevate-shell {
-    start-process -verb runas powershell
+	start-process -verb runas powershell
 }
 
 set-alias -name "less" -value "more"
@@ -30,9 +30,9 @@ set-alias -name "w" -value "get-identity"
 set-alias -name "whoami" -value "get-identity"
 
 function timed-history { 
-    "{0,15} {1,-15} {2}" -f "Id", "Seconds", "Command"
-    "{0,15} {1,-15} {2}" -f "--", "-------", "-------"
-    Get-History | %{ "{0,15}  {1,-15} {2}" -f $_.Id, ($_.EndExecutionTime - $_.StartExecutionTime).TotalSeconds, $_.CommandLine } 
+	"{0,15} {1,-15} {2}" -f "Id", "Seconds", "Command"
+	"{0,15} {1,-15} {2}" -f "--", "-------", "-------"
+	Get-History | %{ "{0,15}  {1,-15} {2}" -f $_.Id, ($_.EndExecutionTime - $_.StartExecutionTime).TotalSeconds, $_.CommandLine } 
 } 
 set-alias -name "hi" -value "timed-history"
 
@@ -113,7 +113,7 @@ function format-bytes {
 	param([byte[]]$bytes, [int]$bytesPerLine = 8)
 	$buffer = new-object system.text.stringbuilder
 	for($offset=0; $offset -lt $bytes.Length; $offset+= $bytesPerLine) {
-		[void]$buffer.AppendFormat('{0:X8}    ', $offset)
+		[void]$buffer.AppendFormat('{0:X8}	', $offset)
 		$numbytes = [math]::min($bytesPerLine, $bytes.Length - $offset)
 		for ($i=0; $i -lt $numbytes; $i++) { [void]$buffer.AppendFormat('{0:X2} ', $bytes[$offset + $i]) }
 		[void]$buffer.AppendFormat(' ' * ((($bytesPerLine - $numBytes) * 3) + 3))

@@ -10,7 +10,7 @@ $env:HOST = $env:COMPUTERNAME
 #$env:TERM = "msys" # http://stackoverflow.com/a/10820885/102371
 
 if(-not($env:dropboxpath) -and (gcm -ErrorAction SilentlyContinue GetDropboxPath)) {
-    $env:dropboxpath = (getdropboxpath)
+	$env:dropboxpath = (getdropboxpath)
 }
 
 
@@ -28,10 +28,6 @@ $sources =
 
 $sources | %{ join-path $env:profile_dir $_ } | ?{ test-path $_ } | %{ write-debug "loading $_";  . $_ }
 rm variable:\sources
-
-$env:PATH += ";" + (join-path $env:dropboxpath "bin\tcc")
-$env:PATH += ";" + (join-path $env:dropboxpath "bin\git-tfs")
-
 
 write-debug "clean-path"
 clean-path
