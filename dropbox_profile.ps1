@@ -10,21 +10,21 @@ $env:HOST = $env:COMPUTERNAME
 #$env:TERM = "msys" # http://stackoverflow.com/a/10820885/102371
 
 if(-not($env:dropboxpath) -and (gcm -ErrorAction SilentlyContinue GetDropboxPath)) {
-	$env:dropboxpath = (getdropboxpath)
+  $env:dropboxpath = (getdropboxpath)
 }
 
 
 ## source the following list of files
 $sources = 
-	"environment.ps1",
-	"infrastructure.ps1",
-	"misc_functions.ps1",
-	"msbuild_functions.ps1",
-	"sql_functions.ps1",
-	"logfiles_functions.ps1",
-	"network_functions.ps1",
-	"sourcecontrol_functions.ps1",
-	"tabexpansion.ps1"
+  "environment.ps1",
+  "infrastructure.ps1",
+  "misc_functions.ps1",
+  "msbuild_functions.ps1",
+  "sql_functions.ps1",
+  "logfiles_functions.ps1",
+  "network_functions.ps1",
+  "sourcecontrol_functions.ps1",
+  "tabexpansion.ps1"
 
 $sources | %{ join-path $env:profile_dir $_ } | ?{ test-path $_ } | %{ write-debug "loading $_";  . $_ }
 rm variable:\sources
